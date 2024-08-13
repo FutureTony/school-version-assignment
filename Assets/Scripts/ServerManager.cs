@@ -57,14 +57,14 @@ public class ServerManager : MonoBehaviour
            {
                 foreach (ulong clientId in networkManager.ConnectedClientsIds)
                 {
-                     networkManager.SpawnManager.GetPlayerNetworkObject(clientId).GetComponent<PlayerNetwork>().Move();
+                    // networkManager.SpawnManager.GetPlayerNetworkObject(clientId).GetComponent<PlayerNetwork>().Move();
                 }
            }
            else
            {
                 var player = networkManager.SpawnManager.GetLocalPlayerObject();
-                 var PlayerObject = player.GetComponent<PlayerNetwork>();
-                 PlayerObject.Move();
+                var PlayerObject = player.GetComponent<PlayerNetwork>();
+                // PlayerObject.Move();
            }
        }
     }
