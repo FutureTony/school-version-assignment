@@ -5,6 +5,7 @@ using UnityEngine;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine.EventSystems;
+using TMPro;
 
 
 
@@ -14,6 +15,7 @@ public class PlayerNetwork : NetworkBehaviour
   public GameObject SpawnpointP2;
   public GameObject bulletPrefab;
   public GameObject gun;
+  public TextMeshProUGUI WinText;
     float playerHP = 3f;
     float moveSpeed = 3f;
     Vector2 moveDir = new Vector2(0, 0);
@@ -68,7 +70,11 @@ public class PlayerNetwork : NetworkBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Bullet")
+        if (!IsOwner)
+        {
+            return;
+        }
+        if (other.gameObject.tag == "Bullet" && other.gameObject.GetComponent<NetworkObject>().OwnerClientId != NetworkManager.Singleton.LocalClientId)
         {
             TakeDamageServerRpc(1);
         }
@@ -78,13 +84,18 @@ public class PlayerNetwork : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void TakeDamageServerRpc(float damage, ServerRpcParams serverRpcParams = default)
     {
-        if(!IsOwner)
-            return;
+
         playerHP -= damage;
         if (playerHP <= 0)
         {
             Destroy(gameObject);
         }
+    }
+    // [ClientRpc]
+    private void ShowEndscreen(int winningPlayer)
+    {
+        WinText = GameObject.Find("WinText").GetComponent<TextMeshProUGUI>();
+        WinText.text = "Player " + winningPlayer + " wins!";
     }
 
     [ServerRpc]
@@ -96,7 +107,7 @@ public class PlayerNetwork : NetworkBehaviour
         Vector2 direction = gun.transform.up;
         GameObject bullet = Instantiate(bulletPrefab, gun.transform.position, gun.transform.rotation);
         NetworkObject bulletNetworkObject = bullet.GetComponent<NetworkObject>();
-        bulletNetworkObject.Spawn(true);
+        bulletNetworkObject.SpawnWithOwnership(serverRpcParams.Receive.SenderClientId,true);
         
         
         bullet.GetComponent<Rigidbody2D>().velocity = direction * 10;
