@@ -14,21 +14,25 @@ public class PlayerNetwork : NetworkBehaviour
   public GameObject SpawnpointP2;
   public GameObject bulletPrefab;
   public GameObject gun;
+    float playerHP = 3f;
     float moveSpeed = 3f;
     Vector2 moveDir = new Vector2(0, 0);
 
     public override void OnNetworkSpawn()
     {
-        if (IsHost && IsOwner)
+        if (!IsOwner)
+            return;
+        
+        if (IsHost)
         {
+            
             transform.position = SpawnpointP1.transform.position;
+            return;
         }
 
-        if (IsClient && !IsHost && IsOwner)
-        {
-            transform.position = SpawnpointP2.transform.position;
-            transform.rotation = new Quaternion(0,180, 0,1);
-        }
+        
+        transform.position = SpawnpointP2.transform.position;
+        transform.rotation = new Quaternion(0,180, 0,1);
     }
 
 
@@ -39,10 +43,10 @@ public class PlayerNetwork : NetworkBehaviour
             return;
         }
         moveDir = Vector2.zero;
-
-        if (Input.GetKey(KeyCode.Space))
+        
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            instantiateBullet();
+            instantiateBulletServerRpc();
         }
         if (Input.GetKey(KeyCode.LeftShift))
         {
@@ -59,12 +63,44 @@ public class PlayerNetwork : NetworkBehaviour
         }
 
         transform.position += new Vector3(moveDir.x, moveDir.y, 0) * moveSpeed * Time.deltaTime;
+        
     }
 
-    private void instantiateBullet()
+    private void OnTriggerEnter2D(Collider2D other)
     {
+        if (other.gameObject.tag == "Bullet")
+        {
+            TakeDamageServerRpc(1);
+        }
+    }
+
+   
+    [ServerRpc(RequireOwnership = false)]
+    private void TakeDamageServerRpc(float damage, ServerRpcParams serverRpcParams = default)
+    {
+        if(!IsOwner)
+            return;
+        playerHP -= damage;
+        if (playerHP <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    [ServerRpc]
+    private void instantiateBulletServerRpc(ServerRpcParams serverRpcParams = default)
+    {
+        //NetworkManager.Singleton.GetComponent<>()
+        //serverRpcParams.Receive.SenderClientId;
+        
+        Vector2 direction = gun.transform.up;
         GameObject bullet = Instantiate(bulletPrefab, gun.transform.position, gun.transform.rotation);
-        bullet.GetComponent<Rigidbody2D>().velocity = gun.transform.forward * 15;
+        NetworkObject bulletNetworkObject = bullet.GetComponent<NetworkObject>();
+        bulletNetworkObject.Spawn(true);
+        
+        
+        bullet.GetComponent<Rigidbody2D>().velocity = direction * 10;
+        bullet.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
     }
     
 
