@@ -16,8 +16,8 @@ public class PlayerNetwork : NetworkBehaviour
     public GameObject bulletPrefab;
     public GameObject gun;
     public TextMeshProUGUI WinText;
-    float playerHP = 3f;
-    float moveSpeed = 3f;
+    float playerHP = 25f;
+    float moveSpeed = 5f;
     Vector2 moveDir = new Vector2(0, 0);
     [SerializeField] public List<string>Emotes;
     public TextMeshProUGUI HostEmote;
