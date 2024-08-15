@@ -53,7 +53,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1708857961
+  GlobalObjectIdHash: 1916991727
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -78,6 +78,14 @@ MonoBehaviour:
   SpawnpointP2: {fileID: 1693343616841908570, guid: 1e6c868208cd1294ca22e6ea04ca851e, type: 3}
   bulletPrefab: {fileID: 6737044869636775701, guid: c53cf094a799a834cb075def5c4c42f8, type: 3}
   gun: {fileID: 4123966409871245064}
+  WinText: {fileID: 0}
+  Emotes:
+  - Hello
+  - Waw
+  - UwU
+  - English or Spanish
+  HostEmote: {fileID: 0}
+  ClientEmote: {fileID: 0}
 --- !u!114 &6628887454341187978
 MonoBehaviour:
   m_ObjectHideFlags: 0

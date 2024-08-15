@@ -12,7 +12,7 @@ public class ServerManager : MonoBehaviour
         networkManager = GetComponent<NetworkManager>();
         
     }
-
+    // setting up GUI area size for buttons
     private void OnGUI()
     {
             GUILayout.BeginArea(new Rect(10, 10, 300, 300));
@@ -28,6 +28,7 @@ public class ServerManager : MonoBehaviour
         }
         GUILayout.EndArea();
     }
+    // buttons to start the server, host, or client
     private void StartButtons()
     {
         if (GUILayout.Button("Host"))
@@ -43,12 +44,14 @@ public class ServerManager : MonoBehaviour
             networkManager.StartServer();
         }
     }
+    // labels for buttons
     private void GUILabels()
     {
         var mode = networkManager.IsHost ? "Host" : networkManager.IsServer ? "Server" : "Client";
         GUILayout.Label("Transport: " + networkManager.NetworkConfig.NetworkTransport.GetType().Name);
         GUILayout.Label("Mode: " + mode);
     }
+    //old unity setup recomendation to start using server rpcs aswell as settijng up a network
     private void SubmitAction()
     {
        if (GUILayout.Button(networkManager.IsServer ? "Move" : "Submit"))
@@ -62,6 +65,7 @@ public class ServerManager : MonoBehaviour
            }
            else
            {
+               // old move function from unity documentation
                 var player = networkManager.SpawnManager.GetLocalPlayerObject();
                 var PlayerObject = player.GetComponent<PlayerNetwork>();
                 // PlayerObject.Move();
