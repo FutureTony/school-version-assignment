@@ -24,7 +24,7 @@ public class ServerManager : MonoBehaviour
         {
             GUILabels();
 
-            SubmitAction();
+            //SubmitAction();
         }
         GUILayout.EndArea();
     }
@@ -52,7 +52,7 @@ public class ServerManager : MonoBehaviour
         GUILayout.Label("Mode: " + mode);
     }
     //old unity setup recomendation to start using server rpcs aswell as settijng up a network
-    private void SubmitAction()
+  /*  private void SubmitAction()
     {
        if (GUILayout.Button(networkManager.IsServer ? "Move" : "Submit"))
        {
@@ -71,5 +71,5 @@ public class ServerManager : MonoBehaviour
                 // PlayerObject.Move();
            }
        }
-    }
+   }*/
 }
